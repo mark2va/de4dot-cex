@@ -1,26 +1,14 @@
 ```
 # Build artifacts
-bin/
-obj/
-*.dll
-*.exe
-*.pdb
-*.nupkg
-*.snupkg
-
-# Dependencies
-packages/
-node_modules/
-
-# IDE
-.vs/
-.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
 *.userprefs
-
-# Logs
-*.log
-
-# OS
-.DS_Store
-Thumbs.db
+obj/
+bin/
+Debug/
+Release/
+x64/
+x86/
 ```
