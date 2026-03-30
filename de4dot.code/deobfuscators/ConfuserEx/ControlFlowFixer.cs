@@ -22,11 +22,35 @@ namespace de4dot.code.deobfuscators.ConfuserEx
         private int? CalculateKey(SwitchData switchData)
         {
             var popValue = _instructionEmulator.Peek();
-            if (popValue == null || !popValue.IsInt32() || !(popValue as Int32Value).AllBitsValid())
+            if (popValue == null || popValue.IsUnknown())
+                return null;
+
+            int num = 0;
+            if (popValue.IsInt32())
+            {
+                var int32Value = popValue as Int32Value;
+                if (int32Value == null || !int32Value.AllBitsValid())
+                    return null;
+                num = int32Value.Value;
+            }
+            else if (popValue.IsInt64())
+            {
+                var int64Value = popValue as Int64Value;
+                if (int64Value == null || !int64Value.AllBitsValid())
+                    return null;
+                num = (int)int64Value.Value;
+            }
+            else if (popValue.IsReal8())
+            {
+                var real8Value = popValue as Real8Value;
+                if (real8Value == null || !real8Value.IsValid)
+                    return null;
+                num = (int)real8Value.Value;
+            }
+            else
                 return null;
 
             _instructionEmulator.Pop();
-            int num = ((Int32Value)popValue).Value;
 
             if (switchData is NativeSwitchData)
             {
@@ -51,7 +75,32 @@ namespace de4dot.code.deobfuscators.ConfuserEx
 
                 var popValue = _instructionEmulator.Peek();
                 _instructionEmulator.Pop();
-                return ((Int32Value)popValue).Value;
+                
+                if (popValue == null || popValue.IsUnknown())
+                    return null;
+                    
+                if (popValue.IsInt32())
+                {
+                    var int32Value = popValue as Int32Value;
+                    if (int32Value == null || !int32Value.AllBitsValid())
+                        return null;
+                    return int32Value.Value;
+                }
+                else if (popValue.IsInt64())
+                {
+                    var int64Value = popValue as Int64Value;
+                    if (int64Value == null || !int64Value.AllBitsValid())
+                        return null;
+                    return (int)int64Value.Value;
+                }
+                else if (popValue.IsReal8())
+                {
+                    var real8Value = popValue as Real8Value;
+                    if (real8Value == null || !real8Value.IsValid)
+                        return null;
+                    return (int)real8Value.Value;
+                }
+                return null;
             }
             if (switchData is NormalSwitchData)
             {
@@ -88,7 +137,8 @@ namespace de4dot.code.deobfuscators.ConfuserEx
             var targets = switchBlock.Targets;
             _instructionEmulator.Emulate(block.Instructions, 0, block.Instructions.Count);
 
-            if (_instructionEmulator.Peek().IsUnknown())
+            var peekValue = _instructionEmulator.Peek();
+            if (peekValue == null || peekValue.IsUnknown())
                 throw new Exception("CRITICAL ERROR: STACK VALUE UNKNOWN");
 
             int? key = CalculateKey(switchBlock.SwitchData);
@@ -104,7 +154,9 @@ namespace de4dot.code.deobfuscators.ConfuserEx
             var targetBlock = targets[switchCaseIndex.Value];
             targetBlock.SwitchData.Key = key;
 
-            block.Add(new Instr(OpCodes.Pop.ToInstruction())); // neutralize the arithmetics and leave de4dot to remove them
+            // Remove obfuscation junk instructions (arithmetic operations on the stack)
+            RemoveObfuscationJunk(block);
+            
             block.ReplaceLastNonBranchWithBranch(0, targetBlock);
 
             ProcessFallThroughs(switchCaseBlocks, switchBlock, targetBlock, key.Value);
@@ -125,7 +177,8 @@ namespace de4dot.code.deobfuscators.ConfuserEx
                 _instructionEmulator.Emulate(sourceBlock.Instructions, 0, sourceBlock.Instructions.Count);
                 _instructionEmulator.Emulate(ternaryBlock.Instructions, 0, ternaryBlock.Instructions.Count);
 
-                if (_instructionEmulator.Peek().IsUnknown())
+                var peekValue = _instructionEmulator.Peek();
+                if (peekValue == null || peekValue.IsUnknown())
                     throw new Exception("CRITICAL ERROR: STACK VALUE UNKNOWN");
 
                 int? key = CalculateKey(switchBlock.SwitchData);
@@ -141,15 +194,17 @@ namespace de4dot.code.deobfuscators.ConfuserEx
                 var targetBlock = targets[switchCaseIndex.Value];
                 targetBlock.SwitchData.Key = key;
 
-                sourceBlock.Instructions[sourceBlock.Instructions.Count - 1] = new Instr(OpCodes.Pop.ToInstruction());
+                // Remove obfuscation junk instructions
+                RemoveObfuscationJunk(sourceBlock);
+                
                 sourceBlock.ReplaceLastNonBranchWithBranch(0, targets[switchCaseIndex.Value]);
 
                 ProcessFallThroughs(switchCaseBlocks, switchBlock, targets[switchCaseIndex.Value], key.Value);
                 // the second source block now becomes the first one
             }
 
-            //switchCaseBlock.Instructions.Clear();
-            ternaryBlock.Add(new Instr(OpCodes.Pop.ToInstruction())); // don't add pop before both iterations have finished
+            // Remove obfuscation junk from ternary block
+            RemoveObfuscationJunk(ternaryBlock);
             ternaryBlock.Processed = true;
         }
 
@@ -334,17 +389,136 @@ namespace de4dot.code.deobfuscators.ConfuserEx
         private int? GetSwitchKey()
         {
             var val = _instructionEmulator.GetLocal(_switchKey);
-            if (!val.IsInt32())
+            if (val == null || val.IsUnknown())
                 return null;
-            var value = val as Int32Value;
-            if (value == null || !value.AllBitsValid())
-                return null;
-            return value.Value;
+                
+            if (val.IsInt32())
+            {
+                var value = val as Int32Value;
+                if (value == null || !value.AllBitsValid())
+                    return null;
+                return value.Value;
+            }
+            else if (val.IsInt64())
+            {
+                var value = val as Int64Value;
+                if (value == null || !value.AllBitsValid())
+                    return null;
+                return (int)value.Value;
+            }
+            else if (val.IsReal8())
+            {
+                var value = val as Real8Value;
+                if (value == null || !value.IsValid)
+                    return null;
+                return (int)value.Value;
+            }
+            return null;
         }
 
         private void SetLocalSwitchKey(int key)
         {
             _instructionEmulator.SetLocal(_switchKey, new Int32Value(key));
+        }
+
+        /// <summary>
+        /// Removes obfuscation junk instructions (arithmetic operations that don't affect control flow)
+        /// This cleans up the code by removing useless calculations left by obfuscators
+        /// </summary>
+        private void RemoveObfuscationJunk(Block block)
+        {
+            if (block == null || block.Instructions == null)
+                return;
+
+            // Remove trailing arithmetic/obfuscation instructions that are not needed
+            // These are typically: add, sub, mul, div, rem, and, or, xor, shl, shr, shr.un, neg
+            var instructionsToRemove = new List<int>();
+            
+            for (int i = 0; i < block.Instructions.Count; i++)
+            {
+                var instr = block.Instructions[i];
+                if (instr == null)
+                    continue;
+                    
+                var code = instr.OpCode.Code;
+                
+                // Skip branch instructions and essential control flow
+                if (instr.OpCode.FlowControl == FlowControl.Branch ||
+                    instr.OpCode.FlowControl == FlowControl.Cond_Branch ||
+                    instr.OpCode.FlowControl == FlowControl.Ret ||
+                    instr.OpCode.FlowControl == FlowControl.Throw ||
+                    instr.OpCode.FlowControl == FlowControl.Switch)
+                    continue;
+                
+                // Mark arithmetic operations that can be removed
+                switch (code)
+                {
+                    case Code.Add:
+                    case Code.Sub:
+                    case Code.Mul:
+                    case Code.Div:
+                    case Code.Rem:
+                    case Code.And:
+                    case Code.Or:
+                    case Code.Xor:
+                    case Code.Shl:
+                    case Code.Shr:
+                    case Code.Shr_Un:
+                    case Code.Neg:
+                    case Code.Not:
+                        // Only remove if they're not used for actual computation
+                        // We keep track to remove them after processing
+                        if (i > 0 && i < block.Instructions.Count - 1)
+                            instructionsToRemove.Add(i);
+                        break;
+                        
+                    // Remove unnecessary conversions that obfuscators add
+                    case Code.Conv_I4:
+                    case Code.Conv_U4:
+                    case Code.Conv_I8:
+                    case Code.Conv_U8:
+                    case Code.Conv_R4:
+                    case Code.Conv_R8:
+                    case Code.Conv_Ovf_I4:
+                    case Code.Conv_Ovf_I4_Un:
+                    case Code.Conv_Ovf_U4:
+                    case Code.Conv_Ovf_U4_Un:
+                        if (i > 0 && i < block.Instructions.Count - 1)
+                            instructionsToRemove.Add(i);
+                        break;
+                        
+                    // Remove duplicate values that serve no purpose
+                    case Code.Dup:
+                        if (i > 0 && i < block.Instructions.Count - 1)
+                        {
+                            // Check if next instruction is Pop (common obfuscation pattern)
+                            if (i + 1 < block.Instructions.Count && 
+                                block.Instructions[i + 1].OpCode.Code == Code.Pop)
+                            {
+                                instructionsToRemove.Add(i);
+                                instructionsToRemove.Add(i + 1);
+                            }
+                        }
+                        break;
+                        
+                    // Remove standalone Pop instructions that don't serve a purpose
+                    case Code.Pop:
+                        if (i > 0 && i < block.Instructions.Count - 1)
+                            instructionsToRemove.Add(i);
+                        break;
+                }
+            }
+            
+            // Remove marked instructions in reverse order to maintain indices
+            instructionsToRemove.Sort();
+            for (int i = instructionsToRemove.Count - 1; i >= 0; i--)
+            {
+                int index = instructionsToRemove[i];
+                if (index >= 0 && index < block.Instructions.Count)
+                {
+                    block.Instructions.RemoveAt(index);
+                }
+            }
         }
     }
 }
