@@ -50,7 +50,9 @@ namespace de4dot.code.deobfuscators.ConfuserEx
 
         private class Deobfuscator : DeobfuscatorBase
         {
-            private readonly ControlFlowFixer _controlFlowFixer = new ControlFlowFixer();
+            // AdvancedControlFlowFixer теперь используется по умолчанию для полной очистки кода
+            // включая поддержку float/long и удаление мусора обфускаторов
+            private readonly AdvancedControlFlowFixer _controlFlowFixer = new AdvancedControlFlowFixer();
 
             private bool _canRemoveLzma = true;
             private ConstantsDecrypter _constantDecrypter;
@@ -74,6 +76,8 @@ namespace de4dot.code.deobfuscators.ConfuserEx
                 get
                 {
                     var list = new List<IBlocksDeobfuscator>();
+                    
+                    // AdvancedControlFlowFixer используется по умолчанию с полной поддержкой типов и очисткой мусора
                     list.Add(_controlFlowFixer);
 
                     if (_deobfuscating && _int32ValueInliner != null)
