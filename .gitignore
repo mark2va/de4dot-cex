@@ -1,52 +1,26 @@
 ```
-# Build artifacts and binaries
-*.exe
-*.dll
-*.so
-*.a
-*.obj
-*.out
-*.pdb
-*.ilk
-*.exp
-*.lib
-*.dylib
-*.class
-*.pyc
-__pycache__/
-*.pyo
-*.pyd
-
-# Dependency directories
-node_modules/
-venv/
-.venv/
-.env
-.env.local
-.env.*
-
-# Build directories (common in .NET projects)
+# Build artifacts
 bin/
 obj/
-Debug/
-Release/
-x64/
-x86/
-build/
-dist/
+*.dll
+*.exe
+*.pdb
+*.nupkg
+*.snupkg
 
-# IDE files
+# Dependencies
+packages/
+node_modules/
+
+# IDE
 .vs/
-.vscode/
 .idea/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
+*.userprefs
 
-# OS generated files
+# Logs
+*.log
+
+# OS
 .DS_Store
 Thumbs.db
-ehthumbs.db
-Icon?
 ```
