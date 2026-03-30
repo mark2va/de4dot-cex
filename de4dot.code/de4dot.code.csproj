@@ -160,6 +160,7 @@
     <Compile Include="deobfuscators\ConfuserEx\ConstantInliner.cs" />
     <Compile Include="deobfuscators\ConfuserEx\Deobfuscator.cs" />
     <Compile Include="deobfuscators\ConfuserEx\ControlFlowFixer.cs" />
+    <Compile Include="deobfuscators\ConfuserEx\AdvancedControlFlowFixer.cs" />
     <Compile Include="deobfuscators\ConfuserEx\LzmaFinder.cs" />
     <Compile Include="deobfuscators\ConfuserEx\ProxyCallFixer.cs" />
     <Compile Include="deobfuscators\ConfuserEx\ResourceDecrypter.cs" />
