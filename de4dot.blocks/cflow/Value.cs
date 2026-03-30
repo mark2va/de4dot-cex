@@ -25,6 +25,7 @@ namespace de4dot.blocks.cflow {
 		Boxed,
 		Int32,
 		Int64,
+		UInt64,
 		Real8,
 		String,
 	}
@@ -60,6 +61,10 @@ namespace de4dot.blocks.cflow {
 
 		public bool IsInt64() {
 			return valueType == ValueType.Int64;
+		}
+
+		public bool IsUInt64() {
+			return valueType == ValueType.UInt64;
 		}
 
 		public bool IsReal8() {

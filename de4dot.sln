@@ -1,6 +1,7 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 15.00
+# Visual Studio 2017
+VisualStudioVersion = 15.0.26730.15
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "de4dot.code", "de4dot.code\de4dot.code.csproj", "{4D10B9EB-3BF1-4D61-A389-CB019E8C9622}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Rename", "Test.Rename\Test.Rename.csproj", "{3FEB2023-B4B0-4DF3-BECF-AD727B55FF37}"
