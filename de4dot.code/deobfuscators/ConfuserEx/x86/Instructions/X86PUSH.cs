@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using de4dot.Bea;
 using de4dot.code.deobfuscators.ConfuserEx.x86;
 

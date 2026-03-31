@@ -1,4 +1,4 @@
-﻿using de4dot.blocks;
+using de4dot.blocks;
 using de4dot.code.deobfuscators.ConfuserEx.x86;
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;

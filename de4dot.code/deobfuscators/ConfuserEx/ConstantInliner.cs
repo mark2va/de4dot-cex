@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using de4dot.blocks;
 using de4dot.blocks.cflow;
