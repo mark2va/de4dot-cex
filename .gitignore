@@ -1,38 +1,68 @@
 ```
 # Build artifacts
-bin/
-obj/
-*.dll
+*.o
+*.obj
 *.exe
-*.pdb
-*.userprefs
-*.cache
-*.log
-*.tmp
+*.dll
+*.so
+*.a
+*.out
+build/
+dist/
 
 # Dependencies
-packages/
 node_modules/
-.nuget/
-.nuget.packages/
+venv/
+.venv/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+target/
+.gradle/
 
-# IDE specific
-.vs/
+# Editor/IDE files
 .vscode/
 .idea/
-*.user
-*.userosscache
-*.suo
-*.userprefs
+*.swp
+*.swo
+*.tmp
 
-# OS generated files
+# System files
 .DS_Store
 Thumbs.db
-ehthumbs.db
-Icon?
-desktop.ini
+.env
+.env.local
+*.env.*
 
-# Configuration specific to local environments
-appsettings.Local.config
-*.userconfig
+# Logs
+*.log
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Compressed files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
 ```
