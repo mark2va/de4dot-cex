@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 
 namespace de4dot.code.deobfuscators.ConfuserEx.x86

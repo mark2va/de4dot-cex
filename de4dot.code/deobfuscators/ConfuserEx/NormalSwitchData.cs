@@ -1,4 +1,4 @@
-﻿using de4dot.blocks;
+using de4dot.blocks;
 using dnlib.DotNet.Emit;
 
 namespace de4dot.code.deobfuscators.ConfuserEx

@@ -1,4 +1,4 @@
-﻿
+
 namespace de4dot.Bea
 {
     public static class BeaConstants

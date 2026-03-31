@@ -1,4 +1,4 @@
-﻿namespace de4dot.blocks
+namespace de4dot.blocks
 {
     public class SwitchData
     {

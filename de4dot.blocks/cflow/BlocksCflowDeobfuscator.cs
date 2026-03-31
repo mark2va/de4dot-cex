@@ -1,4 +1,4 @@
-﻿/*
+/*
     Copyright (C) 2011-2015 de4dot@gmail.com
 
     This file is part of de4dot.
@@ -52,6 +52,7 @@ namespace de4dot.blocks.cflow {
 			ourBlocksDeobfuscators.Add(new ConstantsFolder { ExecuteIfNotModified = true, DisableNewCode = disableNewCFCode });
 			ourBlocksDeobfuscators.Add(new StLdlocFixer { ExecuteIfNotModified = true });
 			ourBlocksDeobfuscators.Add(new DupBlockCflowDeobfuscator { ExecuteIfNotModified = true });
+			ourBlocksDeobfuscators.Add(new ArithmeticDeobfuscator { ExecuteIfNotModified = false, DisableNewCode = disableNewCFCode });
 		}
 
 		public void Add(IEnumerable<IBlocksDeobfuscator> blocksDeobfuscators) {
