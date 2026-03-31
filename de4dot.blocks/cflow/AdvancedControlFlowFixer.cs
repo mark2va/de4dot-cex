@@ -26,7 +26,7 @@ using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 
 namespace de4dot.blocks.cflow {
-	class AdvancedControlFlowFixer : IBlocksDeobfuscator {
+	public class AdvancedControlFlowFixer : IBlocksDeobfuscator {
 		public bool ExecuteIfNotModified { get; }
 
 		public AdvancedControlFlowFixer() {
