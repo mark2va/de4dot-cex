@@ -1,1 +1,1 @@
-Nothing should be ignored based on the provided file changes. The modified file 'de4dot.blocks/cflow/ArithmeticDeobfuscator.cs' is a source code file (.cs extension) which should not be added to .gitignore according to rule #7. Since there are no build artifacts, dependencies, or temporary files in the changes, no additional ignore rules are needed.
+Nothing should be ignored based on the provided file changes. The only modified file is a source code file (.cs), which should not be added to .gitignore.

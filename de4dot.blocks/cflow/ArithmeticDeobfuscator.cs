@@ -211,8 +211,7 @@ namespace de4dot.blocks.cflow {
 						var flowControl = nextInstr.OpCode.FlowControl;
 						if (flowControl == FlowControl.Branch ||
 							flowControl == FlowControl.Cond_Branch ||
-							flowControl == FlowControl.Return ||
-							flowControl == FlowControl.Switch)
+							flowControl == FlowControl.Return)
 							break;
 						
 						// Если следующая инструкция потребляет значение со стека
