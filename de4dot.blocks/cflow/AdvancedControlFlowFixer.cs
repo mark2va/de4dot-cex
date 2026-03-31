@@ -24,33 +24,20 @@
 using System.Collections.Generic;
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;
-using de4dot.blocks.cflow;
 
 namespace de4dot.blocks.cflow {
 	class AdvancedControlFlowFixer : IBlocksDeobfuscator {
-		public bool ExecuteIfNotModified { get; set; }
-		public bool DisableNewCode { get; set; }
+		public bool ExecuteIfNotModified { get; }
 
 		public AdvancedControlFlowFixer() {
 			ExecuteIfNotModified = true;
 		}
 
-		public void Initialize(MethodDef method) {
+		public void DeobfuscateBegin(Blocks blocks) {
 		}
 
-		public bool DeobfuscateBegin() {
+		public bool Deobfuscate(List<Block> allBlocks) {
 			return false;
-		}
-
-		public bool DeobfuscateEnd() {
-			return false;
-		}
-
-		public bool Deobfuscate(Block block) {
-			return false;
-		}
-
-		public void Simplify(Block block) {
 		}
 	}
 }
