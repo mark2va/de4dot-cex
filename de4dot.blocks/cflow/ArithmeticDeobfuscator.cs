@@ -29,7 +29,7 @@ namespace de4dot.blocks.cflow {
 	/// Обрабатывает паттерны где переменным присваиваются значения int, float, long
 	/// и далее идёт while/do цикл с кучей условий if и goto
 	/// </summary>
-	class ArithmeticDeobfuscator : BlockDeobfuscator {
+	public class ArithmeticDeobfuscator : BlockDeobfuscator {
 		InstructionEmulator instructionEmulator = new InstructionEmulator();
 		IList<Parameter> args;
 
