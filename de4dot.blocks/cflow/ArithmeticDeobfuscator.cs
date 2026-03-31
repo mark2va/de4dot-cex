@@ -195,7 +195,7 @@ namespace de4dot.blocks.cflow {
 		/// </summary>
 		private bool RemoveDeadArithmetic(Block block) {
 			bool modified = false;
-			var junkCodes = new HashSet<Code> {
+			var junkCodes = new List<Code> {
 				Code.Add, Code.Sub, Code.Mul, Code.Div, Code.Rem,
 				Code.And, Code.Or, Code.Xor, Code.Shl, Code.Shr, Code.Shr_Un,
 				Code.Neg, Code.Not
@@ -208,19 +208,20 @@ namespace de4dot.blocks.cflow {
 					bool isUsed = false;
 					for (int j = i + 1; j < block.Instructions.Count; j++) {
 						var nextInstr = block.Instructions[j];
-						if (nextInstr.OpCode.FlowControl == FlowControl.Branch ||
-							nextInstr.OpCode.FlowControl == FlowControl.Cond_Branch ||
-							nextInstr.OpCode.FlowControl == FlowControl.Ret ||
-							nextInstr.OpCode.FlowControl == FlowControl.Switch)
+						var flowControl = nextInstr.OpCode.FlowControl;
+						if (flowControl == FlowControl.Branch ||
+							flowControl == FlowControl.Cond_Branch ||
+							flowControl == FlowControl.Return ||
+							flowControl == FlowControl.Switch)
 							break;
-							
+						
 						// Если следующая инструкция потребляет значение со стека
-						if (nextInstr.OpCode.StackBehaviourPop == StackBehaviour.Pop1 ||
-							nextInstr.OpCode.StackBehaviourPop == StackBehaviour.Pop1_pop1 ||
-							nextInstr.OpCode.StackBehaviourPop == StackBehaviour.Pop1_pop1_pop1 ||
-							nextInstr.OpCode.StackBehaviourPop == StackBehaviour.PopAll) {
+						var stackPop = nextInstr.OpCode.StackBehaviourPop;
+						if (stackPop == StackBehaviour.Pop1 ||
+							stackPop == StackBehaviour.Pop1_pop1 ||
+							stackPop == StackBehaviour.PopAll) {
 							// Проверяем это store или другая арифметическая операция
-							if (nextInstr.IsStloc() || nextInstr.IsStarg() || junkCodes.Contains(nextInstr.OpCode.Code))
+							if (nextInstr.IsStloc() || IsStarg(nextInstr) || junkCodes.Contains(nextInstr.OpCode.Code))
 								continue;
 							isUsed = true;
 							break;
@@ -234,6 +235,11 @@ namespace de4dot.blocks.cflow {
 				}
 			}
 			return modified;
+		}
+
+		// Helper method to check if instruction is starg
+		private bool IsStarg(Instr instr) {
+			return instr.OpCode.Code == Code.Starg || instr.OpCode.Code == Code.Starg_S;
 		}
 
 		/// <summary>
