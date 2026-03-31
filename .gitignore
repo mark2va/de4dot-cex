@@ -1,38 +1,38 @@
 ```
-# Build artifacts and binaries
-*.exe
+# Build artifacts
+bin/
+obj/
 *.dll
-*.so
-*.a
-*.obj
-*.out
+*.exe
 *.pdb
-*.ilk
+*.userprefs
+*.cache
+*.log
+*.tmp
 
 # Dependencies
 packages/
-lib/
-bin/
-obj/
+node_modules/
+.nuget/
+.nuget.packages/
 
-# Logs
-*.log
-
-# Temporary files
-*.tmp
-*.temp
-
-# User-specific files
+# IDE specific
 .vs/
+.vscode/
+.idea/
 *.user
 *.userosscache
 *.suo
+*.userprefs
 
 # OS generated files
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
 
-# Configuration files that might contain secrets
-*.config.user
-
+# Configuration specific to local environments
+appsettings.Local.config
+*.userconfig
 ```
